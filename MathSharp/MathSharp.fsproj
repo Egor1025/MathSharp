@@ -8,8 +8,16 @@
     <ItemGroup>
         <Compile Include="Ast.fs" />
         <Compile Include="Parser.fs" />
-        <Content Include="test.ms" />
+        <Compile Include="Interpreter.fs" />
+        <Compile Include="Builtins.fs" />
         <Compile Include="Program.fs" />
+        
+        <Content Include="Examples\fib.ms" />
+        <Content Include="Examples\fact.ms" />
+        <Content Include="Examples\char.ms" />
+        <Content Include="Examples\gauss.ms" />
+        <Content Include="Examples\io.ms" />
+        <Content Include="Examples\lists.ms" />
     </ItemGroup>
 
     <ItemGroup>

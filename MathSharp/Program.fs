@@ -1,18 +1,32 @@
 module MathSharp.Program
 
+open System
 open FParsec
 open MathSharp.Parser
+open MathSharp.Interpreter
+open MathSharp.Builtins
 
-let runParse input =
-    match run pProgram input with
+let runSource src =
+    match run pProgram src with
     | Success (prog, _, _) ->
-        printfn "%A" prog
+        let env0 = emptyEnv |> addBuiltins
+        let env = evalProgramWith env0 prog
+        match env.Funcs |> Map.tryFind "main" with
+        | None ->
+            Console.WriteLine "No 'main' function defined"
+        | Some def ->
+            let result = applyUserFunc env def []
+            Console.WriteLine(valueToString result)
     | Failure (err, _, _) ->
-        printfn "%s" err
+        Console.WriteLine err
 
-[<EntryPoint>]    
+[<EntryPoint>]
 let main argv =
-    let path = "../../../test.ms"
-    let src = System.IO.File.ReadAllText path
-    runParse src
-    0
+    if argv.Length > 0 then
+        let path = $"../../../{argv[0]}"
+        let src = IO.File.ReadAllText path
+        runSource src
+        0
+    else
+        Console.WriteLine "Usage: dotnet run -- <file.ms>"
+        1
