@@ -4,4 +4,4 @@ fact(n: N) = {
     n * fact(n-1), n > 0
 }
 
-main() = fact(5)
+main() = println("5! =", fact(5))

@@ -5,4 +5,4 @@ F(n: N) = {
     F(n-1) + F(n-2), n >= 2
 }
 
-main() = F(10)
+main() = println("Fibonacci 10th =", F(10))

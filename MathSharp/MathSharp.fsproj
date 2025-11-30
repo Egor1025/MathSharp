@@ -10,6 +10,7 @@
         <Compile Include="Parser.fs" />
         <Compile Include="Interpreter.fs" />
         <Compile Include="Builtins.fs" />
+        <Compile Include="TypeCheck.fs" />
         <Compile Include="Program.fs" />
         
         <Content Include="Examples\fib.ms" />
@@ -18,6 +19,9 @@
         <Content Include="Examples\gauss.ms" />
         <Content Include="Examples\io.ms" />
         <Content Include="Examples\lists.ms" />
+        <Content Include="Examples\bubbleSort.ms" />
+        <Content Include="Examples\taylor.ms" />
+        <Content Include="README.md" />
     </ItemGroup>
 
     <ItemGroup>

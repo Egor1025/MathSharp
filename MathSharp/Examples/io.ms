@@ -1,5 +1,3 @@
-copyFile() = writeFile("out.txt", readFile("in.txt"))
-
-echoInt() = println(readInt())
+copyFile() = writeFile("out.txt", readFile(readLine()))
 
 main() = copyFile()
