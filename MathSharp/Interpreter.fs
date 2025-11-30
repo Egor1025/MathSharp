@@ -14,6 +14,7 @@ and Value =
     | StringVal of string
     | ListVal of Value list
     | FunctionVal of FunctionClosure
+    | UnitVal
 
 and EvalEnv =
     { Vars: Map<string, Value>

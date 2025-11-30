@@ -24,7 +24,7 @@ let pIdentifier: P<string> =
         many1Satisfy2L isIdentStart isIdentCont "identifier"
         >>= fun name ->
                 if reserved.Contains name then
-                    fail (sprintf "reserved keyword '%s'" name)
+                    fail $"reserved keyword '%s{name}'"
                 else
                     preturn name
     )
@@ -73,8 +73,22 @@ let pBoolLiteral: P<Expr> =
     <|> (keyword "false" >>% BoolLit false)
 
 let pStringLiteral: P<Expr> =
+    let escapedChar: P<char> =
+        choice [
+            pstring "\\n" >>% '\n'
+            pstring "\\t" >>% '\t'
+            pstring "\\\"" >>% '"'
+            pstring "\\\\" >>% '\\'
+        ]
+
+    let normalChar: P<char> =
+        satisfy (fun c -> c <> '"' && c <> '\\' && c <> '\n' && c <> '\r')
+
     ws (
-        between (pchar '"') (pchar '"') (manyChars (noneOf "\"\n\r"))
+        between
+            (pchar '"')
+            (pchar '"')
+            (manyChars (escapedChar <|> normalChar))
         |>> StringLit
     )
 
@@ -226,7 +240,7 @@ let pFuncBody: P<FuncBody> =
             (sym "}")
             (many1 pPieceLine)
         |>> Piecewise
-    piecewise <|> (pExpr |>> Single)
+    attempt piecewise <|> (pExpr |>> Single)
 
 let pFuncSig: P<FuncSig> =
     pipe2
@@ -236,9 +250,12 @@ let pFuncSig: P<FuncSig> =
             { Name = name
               Type = ty })
 
+let pConstName: P<string> =
+    pIdentifier .>> notFollowedBy (spaces >>. pchar '(')
+
 let pConstDef: P<ConstDef> =
     pipe2
-        pIdentifier
+        pConstName
         (sym "=" >>. pExpr)
         (fun name value ->
             { Name = name

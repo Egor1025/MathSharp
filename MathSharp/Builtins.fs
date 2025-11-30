@@ -2,7 +2,6 @@ module MathSharp.Builtins
 
 open System
 open System.IO
-open MathSharp.Ast
 open MathSharp.Interpreter
 
 let rec valueToString v =
@@ -15,6 +14,7 @@ let rec valueToString v =
         let inner = xs |> List.map valueToString |> String.concat ", "
         $"[{inner}]"
     | FunctionVal _ -> "<function>"
+    | UnitVal -> ""
 
 let builtinSqrt =
     BuiltinFunc(fun args ->
@@ -34,7 +34,7 @@ let builtinPrintln =
         |> List.map valueToString
         |> String.concat " "
         |> Console.WriteLine
-        BoolVal true)
+        UnitVal)
 
 let builtinPrint =
     BuiltinFunc(fun args ->
@@ -42,7 +42,15 @@ let builtinPrint =
         |> List.map valueToString
         |> String.concat " "
         |> Console.Write
-        BoolVal true)
+        UnitVal)
+
+let builtinReadLine =
+    BuiltinFunc(fun args ->
+        match args with
+        | [] ->
+            let line = Console.ReadLine()
+            StringVal line
+        | _ -> runtimeError "readLine expects 0 arguments")
 
 let builtinReadInt =
     BuiltinFunc(fun args ->
@@ -136,6 +144,7 @@ let addBuiltins env =
     |> withBuiltin "exp" builtinExp
     |> withBuiltin "println" builtinPrintln
     |> withBuiltin "print" builtinPrint
+    |> withBuiltin "readLine" builtinReadLine
     |> withBuiltin "readInt" builtinReadInt
     |> withBuiltin "readReal" builtinReadReal
     |> withBuiltin "readFile" builtinReadFile

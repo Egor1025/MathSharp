@@ -5,20 +5,31 @@ open FParsec
 open MathSharp.Parser
 open MathSharp.Interpreter
 open MathSharp.Builtins
+open MathSharp.TypeCheck
 
 let runSource src =
     match run pProgram src with
     | Success (prog, _, _) ->
-        let env0 = emptyEnv |> addBuiltins
-        let env = evalProgramWith env0 prog
-        match env.Funcs |> Map.tryFind "main" with
-        | None ->
-            Console.WriteLine "No 'main' function defined"
-        | Some def ->
-            let result = applyUserFunc env def []
-            Console.WriteLine(valueToString result)
+        try
+            checkProgram prog
+            let env0 = Interpreter.emptyEnv |> addBuiltins
+            let env = evalProgramWith env0 prog
+            match env.Funcs |> Map.tryFind "main" with
+            | None ->
+                Console.WriteLine "No 'main' function defined"
+            | Some def ->
+                let result = applyUserFunc env def []
+                match result with
+                | UnitVal -> ()
+                | _ -> Console.WriteLine(valueToString result)
+        with
+        | TypeError msg ->
+            Console.WriteLine $"Type error: {msg}"
+        | RuntimeError msg ->
+            Console.WriteLine $"Runtime error: {msg}"
     | Failure (err, _, _) ->
         Console.WriteLine err
+
 
 [<EntryPoint>]
 let main argv =
