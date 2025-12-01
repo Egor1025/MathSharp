@@ -21,7 +21,6 @@
         <Content Include="Examples\lists.ms" />
         <Content Include="Examples\bubbleSort.ms" />
         <Content Include="Examples\taylor.ms" />
-        <Content Include="README.md" />
     </ItemGroup>
 
     <ItemGroup>
