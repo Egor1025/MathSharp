@@ -210,6 +210,17 @@ let rec evalExpr (env: EvalEnv) (expr: Expr) : Value =
               Parameters = ps
               Body = FuncBody.Single body }
         FunctionVal(UserFunc(def, env))
+    | Factorial e ->
+        let v = evalExpr env e
+        match v with
+        | IntVal n when n >= 0 ->
+            let rec fact k acc =
+                if k <= 1 then acc else fact (k - 1) (acc * k)
+            IntVal (fact n 1)
+        | IntVal _ ->
+            runtimeError "Factorial is only defined for non negative integers"
+        | _ ->
+            runtimeError "Factorial expects integer"
 
 and applyUserFunc (closureEnv: EvalEnv) (def: FuncDef) (args: Value list) : Value =
     let ps = def.Parameters

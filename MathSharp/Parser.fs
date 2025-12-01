@@ -154,11 +154,20 @@ and pPrimary s =
         pLiteral
     ] s
 
+and pPostfix s =
+    pipe2
+        pPrimary
+        (many (sym "!"))
+        (fun e bangs ->
+            List.fold (fun acc _ -> Factorial acc) e bangs
+        )
+        s
+
 and pUnary s =
     let neg =
         sym "-" >>. pUnary
         |>> fun e -> Unary(UnaryOp.Neg, e)
-    neg <|> pPrimary <| s
+    neg <|> pPostfix <| s
 
 and pPow s =
     let powOp =

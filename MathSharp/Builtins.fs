@@ -28,6 +28,13 @@ let builtinExp =
         | [x] -> RealVal(Math.Exp(toFloat x))
         | _ -> runtimeError "exp expects 1 argument")
 
+let builtinFail =
+    BuiltinFunc(fun args ->
+        match args with
+        | [StringVal msg] -> runtimeError msg
+        | _ -> runtimeError "fail expects (string)"
+    )
+
 let builtinPrintln =
     BuiltinFunc(fun args ->
         args
@@ -142,6 +149,7 @@ let addBuiltins env =
     |> withVar "E" (RealVal Math.E)
     |> withBuiltin "sqrt" builtinSqrt
     |> withBuiltin "exp" builtinExp
+    |> withBuiltin "fail" builtinFail
     |> withBuiltin "println" builtinPrintln
     |> withBuiltin "print" builtinPrint
     |> withBuiltin "readLine" builtinReadLine

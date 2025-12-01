@@ -48,6 +48,7 @@ type Expr =
     | Call of string * Expr list
     | ListLiteral of Expr list
     | AnonFunc of Param list * Expr
+    | Factorial of Expr
 
 type Condition =
     | Otherwise

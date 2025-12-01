@@ -249,6 +249,13 @@ let rec typeOfExpr (env: TypeEnv) (expr: Expr) : Ty =
                         | _ -> typeError "Heterogeneous list elements are not allowed")
                     t0
             TList tElem
+    | Factorial e ->
+        let t = typeOfExpr env e
+        match t with
+        | TN
+        | TZ
+        | TUnknown -> t
+        | _ -> typeError "Factorial expects integer type"
     | AnonFunc (ps, body) ->
         let paramTypes =
             ps
